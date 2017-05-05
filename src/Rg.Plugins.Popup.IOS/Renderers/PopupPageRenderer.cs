@@ -152,12 +152,13 @@ namespace Rg.Plugins.Popup.IOS.Renderers
 
         private void UpdateElementSize()
         {
-            if (View?.Superview == null)
-                return;
+			// This is where the crashing occurs for iOS. Somehow View.Superview is still null
+			// even after the checking performed in the past few lines.
+			// The workaround: get the bound value and check the bound, if null then don't do anything
+            var bound = View?.Superview?.Bounds;
 
-            var bound = View.Superview.Bounds;
-
-            SetElementSize(new Size(bound.Width, bound.Height - _keyboardBounds.Height));
+			if (bound != null)
+				SetElementSize(new Size(bound.Value.Width, bound.Value.Height - _keyboardBounds.Height));
         }
     }
 }
